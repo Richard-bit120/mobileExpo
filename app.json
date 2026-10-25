@@ -1,8 +1,10 @@
 {
   "expo": {
-    "name": "mobileCHAT",
-    "slug": "mobileCHAT",
+    "name": "mi-app-mobile",
+    "slug": "mi-app-mobile",
     "version": "1.0.0",
+    "scheme": "miappmobile",
+    "assetBundlePatterns": ["**/*"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -19,6 +21,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": ["expo-router"]
   }
 }
