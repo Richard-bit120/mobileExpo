@@ -11,10 +11,7 @@ export default function RootLayout() {
         <FavoritesProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="producto/[id]"
-              options={{ title: "Detalle del Producto" }}
-            />
+            <Stack.Screen name="producto/[id]" options={{ title: "Volver" }} />
           </Stack>
         </FavoritesProvider>
       </UserProvider>
