@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useRouter } from "expo-router"; // <-- 1. Importamos useRouter
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
@@ -8,13 +9,13 @@ import { FavoritesContext } from "../../context/FavoritesContext";
 import { COLORS, SPACING, GLOBAL_STYLES } from "../../constants/theme";
 import { ProductCard } from "../../components/ProductCard";
 import { Ionicons } from "@expo/vector-icons";
-import { confirmDelete } from "../../utils/helpers"; // <-- Importamos correctamente desde helpers
+import { confirmDelete } from "../../utils/helpers";
 
 export default function FavoritesScreen() {
+  const router = useRouter(); // <-- 2. Inicializamos el router
   const { favorites, removeFavorite, reorderFavorites } =
     useContext(FavoritesContext);
 
-  // ❌ Eliminamos la función local duplicada y usamos directamente la importada de helpers.
   const renderRightActions = (id) => (
     <Pressable
       style={styles.deleteAction}
@@ -30,6 +31,7 @@ export default function FavoritesScreen() {
         <ProductCard
           item={item}
           layout="horizontal"
+          onPress={() => router.push(`/producto/${item.id}`)} // <-- 3. Navegación al detalle
           onLongPress={drag}
           disabled={isActive}
           rightAction={
@@ -39,6 +41,7 @@ export default function FavoritesScreen() {
       </Swipeable>
     </ScaleDecorator>
   );
+
   if (favorites.length === 0) {
     return (
       <View style={GLOBAL_STYLES.centeredContainer}>

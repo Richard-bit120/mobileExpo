@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 // Hooks y Contextos
 import { useFetch } from "../../hooks/useFetch";
 import { FavoritesContext } from "../../context/FavoritesContext";
+import { CartContext } from "../../context/CartContext";
 
 // Componentes y Tema
 import { AppButton } from "../../components/AppButton";
@@ -22,7 +23,6 @@ import { notifyFavoriteAdded, notifyCartAdded } from "../../utils/helpers";
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
 
-  // Llamamos a la API con el ID específico
   const {
     data: product,
     loading,
@@ -30,8 +30,8 @@ export default function ProductDetailScreen() {
   } = useFetch(`https://fakestoreapi.com/products/${id}`);
 
   const { toggleFavorite, isFavorite } = useContext(FavoritesContext);
+  const { addToCart } = useContext(CartContext);
 
-  // Estados de carga y error usando los contenedores globales
   if (loading || !product) {
     return (
       <View style={GLOBAL_STYLES.centeredContainer}>
@@ -50,10 +50,8 @@ export default function ProductDetailScreen() {
     );
   }
 
-  // Verificamos si ya es favorito
   const productIsFav = isFavorite(product.id);
 
-  // Manejador personalizado para la acción de favoritos
   const handleToggleFavorite = () => {
     toggleFavorite(product);
 
@@ -62,9 +60,14 @@ export default function ProductDetailScreen() {
     }
   };
 
+  const handleAddToCart = () => {
+    addToCart(product);
+    notifyCartAdded();
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* 1. Tarjeta de Imagen (Sincronizada con el estilo card global) */}
+      {/* 1. Tarjeta de Imagen */}
       <View style={[GLOBAL_STYLES.card, styles.imageCard]}>
         <Image
           source={{ uri: product.image }}
@@ -73,7 +76,7 @@ export default function ProductDetailScreen() {
         />
       </View>
 
-      {/* 2. Información General usando la jerarquía tipográfica global */}
+      {/* 2. Información General */}
       <Text style={styles.category}>
         {product.category ? product.category.toUpperCase() : "GENERAL"}
       </Text>
@@ -90,29 +93,27 @@ export default function ProductDetailScreen() {
         {product.description}
       </Text>
 
-      {/* 4. Botones de Acción */}
+      {/* 3. Botones de Acción unificados */}
       <View style={styles.actionsContainer}>
         <AppButton
           title={productIsFav ? "Quitar de Favoritos" : "Agregar a Favoritos"}
           onPress={handleToggleFavorite}
-          style={
-            productIsFav
-              ? { backgroundColor: COLORS.warning || "#F1C40F" }
-              : undefined
-          }
+          variant={productIsFav ? "danger" : "secondary"}
           icon={
             <Ionicons
-              name={productIsFav ? "star" : "star-outline"}
+              name={productIsFav ? "heart" : "heart-outline"}
               size={18}
               color={productIsFav ? COLORS.white : COLORS.primary}
             />
           }
-          variant="secondary"
         />
         <AppButton
-          title="Comprar"
-          onPress={notifyCartAdded}
+          title="Agregar al carrito"
+          onPress={handleAddToCart}
           variant="primary"
+          icon={
+            <Ionicons name="cart-outline" size={18} color={COLORS.white} />
+          }
         />
       </View>
     </ScrollView>
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.small,
   },
   priceSpacing: {
-    fontSize: 22, // Ligeramente más grande y destacado para el detalle
+    fontSize: 22,
     marginBottom: SPACING.medium,
   },
   descriptionSpacing: {
@@ -156,7 +157,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   actionsContainer: {
-    gap: SPACING.medium,
     paddingBottom: SPACING.xxlarge,
   },
 });

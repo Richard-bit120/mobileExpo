@@ -11,8 +11,9 @@ import { useFetch } from "../../hooks/useFetch";
 import { AppButton } from "../../components/AppButton";
 import { ProductCard } from "../../components/ProductCard";
 import { COLORS, SPACING, GLOBAL_STYLES } from "../../constants/theme";
-import { notifyFavoriteAdded } from "../../utils/helpers";
+import { notifyFavoriteAdded, notifyCartAdded } from "../../utils/helpers";
 import { FavoritesContext } from "../../context/FavoritesContext";
+import { CartContext } from "../../context/CartContext";
 
 export default function CatalogScreen() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function CatalogScreen() {
   );
 
   const { toggleFavorite, isFavorite } = useContext(FavoritesContext);
+  const { addToCart } = useContext(CartContext);
 
   const handleToggleFavorite = (product) => {
     const wasFav = isFavorite(product.id);
@@ -29,6 +31,11 @@ export default function CatalogScreen() {
     if (!wasFav) {
       notifyFavoriteAdded();
     }
+  };
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    notifyCartAdded();
   };
 
   if (loading && !data) {
@@ -42,7 +49,6 @@ export default function CatalogScreen() {
   if (error) {
     return (
       <View style={GLOBAL_STYLES.centeredContainer}>
-        {/* Usamos GLOBAL_STYLES combinado con el color de peligro para mantener consistencia */}
         <Text style={[GLOBAL_STYLES.bodyText, styles.errorText]}>
           Error: {error}
         </Text>
@@ -57,6 +63,7 @@ export default function CatalogScreen() {
       layout="vertical"
       isFavorite={isFavorite(item.id)}
       onToggleFavorite={handleToggleFavorite}
+      onAddToCart={handleAddToCart}
       onPress={() => router.push(`/producto/${item.id}`)}
     />
   );

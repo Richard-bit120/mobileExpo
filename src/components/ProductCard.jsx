@@ -1,6 +1,14 @@
 // src/components/ProductCard.jsx
 import React from "react";
-import { Pressable, View, Text, Image, StyleSheet } from "react-native";
+import {
+  Pressable,
+  TouchableOpacity,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { COLORS, SPACING } from "../constants/theme";
 import { FavoriteIcon } from "./FavoriteIcon";
 
@@ -13,6 +21,7 @@ export const ProductCard = ({
   rightAction,
   isFavorite = false,
   onToggleFavorite,
+  onAddToCart,
 }) => {
   const isVertical = layout === "vertical";
 
@@ -33,7 +42,6 @@ export const ProductCard = ({
         resizeMode="contain"
       />
       <View style={isVertical ? styles.infoVertical : styles.infoHorizontal}>
-        {/* Categoría opcional arriba del título (igual que en tu imagen de referencia) */}
         {item.category && (
           <Text style={styles.category}>
             {typeof item.category === "string"
@@ -49,9 +57,22 @@ export const ProductCard = ({
           {item.title}
         </Text>
         {item.price && <Text style={styles.price}>$ {item.price}</Text>}
+
+        {onAddToCart && (
+          <TouchableOpacity
+            style={styles.cartButton}
+            activeOpacity={0.8}
+            onPress={(e) => {
+              e.stopPropagation();
+              onAddToCart(item);
+            }}
+          >
+            <Ionicons name="cart-outline" size={18} color={COLORS.white} />
+            <Text style={styles.cartButtonText}>Agregar al carrito</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* Si pasamos onToggleFavorite, mostramos el corazón interactivo */}
       {onToggleFavorite ? (
         <Pressable
           onPress={() => onToggleFavorite(item)}
@@ -95,20 +116,35 @@ const styles = StyleSheet.create({
   category: {
     fontSize: 10,
     fontWeight: "700",
-    color: COLORS.primary, // Color primario para la categoría
+    color: COLORS.primary,
     letterSpacing: 1,
     marginBottom: 4,
     textAlign: "center",
   },
   title: { fontSize: 16, fontWeight: "600", color: COLORS.text },
-  // Cambiamos COLORS.success por COLORS.primary para que el precio sea azul/morado
   price: {
     fontSize: 18,
     fontWeight: "700",
     color: COLORS.primary,
     marginTop: 4,
   },
-
+  cartButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.primary,
+    paddingVertical: 10,
+    paddingHorizontal: SPACING.large,
+    borderRadius: 8,
+    marginTop: SPACING.medium,
+    width: "100%",
+    gap: SPACING.small,
+  },
+  cartButtonText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: "600",
+  },
   actionContainer: {
     position: "absolute",
     top: SPACING.small,

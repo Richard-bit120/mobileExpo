@@ -86,6 +86,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="carrito"
+        options={{
+          title: "Mi Carrito",
+          tabBarLabel: "Carrito",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="cart" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="perfil"
         options={{
           title: "Mi Perfil",

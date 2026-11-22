@@ -5,6 +5,22 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
+import { COLORS, SPACING } from "../constants/theme";
+
+const VARIANT_STYLES = {
+  primary: {
+    backgroundColor: COLORS.primary,
+    textColor: COLORS.white,
+  },
+  secondary: {
+    backgroundColor: COLORS.primaryLight,
+    textColor: COLORS.primary,
+  },
+  danger: {
+    backgroundColor: COLORS.danger,
+    textColor: COLORS.white,
+  },
+};
 
 export const AppButton = ({
   title,
@@ -15,28 +31,26 @@ export const AppButton = ({
   icon,
   style,
 }) => {
-  // Determinamos el estilo base según la variante (puedes ajustar los colores a tu diseño)
-  const isPrimary = variant === "primary";
-
-  const backgroundColor = isPrimary ? "#007AFF" : "#E8F0FE";
-  const textColor = isPrimary ? "#FFFFFF" : "#007AFF";
-  const disabledColor = "#A1A1AA";
+  const currentVariant = VARIANT_STYLES[variant] || VARIANT_STYLES.primary;
+  const backgroundColor = disabled
+    ? COLORS.textMuted
+    : currentVariant.backgroundColor;
+  const textColor = currentVariant.textColor;
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.8}
-      style={[
-        styles.button,
-        { backgroundColor: disabled ? disabledColor : backgroundColor },
-        style, // Permite sobrescribir estilos desde el componente padre si es estrictamente necesario
-      ]}
+      style={[styles.button, { backgroundColor }, style]}
     >
       {loading ? (
         <ActivityIndicator color={textColor} />
       ) : (
-        <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+        <>
+          {icon}
+          <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+        </>
       )}
     </TouchableOpacity>
   );
@@ -48,9 +62,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 16,
+    paddingHorizontal: SPACING.large,
     flexDirection: "row",
-    marginVertical: 8,
+    gap: SPACING.small,
+    marginVertical: SPACING.small,
   },
   text: {
     fontSize: 16,

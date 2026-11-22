@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Image, StyleSheet, Alert, Pressable } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { UserContext } from "../../context/UserContext";
